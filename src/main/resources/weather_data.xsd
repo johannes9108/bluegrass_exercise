@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2020 sp1 (x64) (http://www.altova.com) by Dhivya P (H & M HENNES & MAURITZ GBC AB) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.1">
+	<xs:element name="WeatherData">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Reading" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StationId" type="xs:integer"/>
+							<xs:element name="StationName" type="xs:string"/>
+							<xs:element name="Timestamp" type="xs:dateTime"/>
+							<xs:element name="Parameter" maxOccurs="3">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Name">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Temp"/>
+													<xs:enumeration value="WindDirection"/>
+													<xs:enumeration value="WindSpeed"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="Value" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

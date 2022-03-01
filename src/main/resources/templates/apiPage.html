@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .error {
+        color: red;
+    }
+</style>
+<body>
+
+<h1>
+    Bluegrass Exercise
+</h1>
+
+<p th:text="${exception}" ></p>
+<form action="#" th:action="@{/home}" th:object="${config}" method="post" >
+    <select th:field="*{frequency}" >
+        <option th:value="HOUR">Hour</option>
+        <option th:value="DAY">Day</option>
+        <option th:value="WEEK">Week</option>
+    </select>
+    <p>Id: <input type="number" th:field="*{stationId}"  /></p>
+    <p th:if="${#fields.hasErrors('stationId')}" th:errorclass="error" th:errors="*{stationId}" />
+    <p>Directory Location: <input type="text" th:field="*{directoryLocation}"/></p>
+    <p th:if="${#fields.hasErrors('directoryLocation')}" th:errorclass="error" th:errors="*{directoryLocation}" />
+    <p><input type="submit" value="Call API" /></p>
+</form>
+
+</body>
+</html>
