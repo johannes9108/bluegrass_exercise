@@ -32,7 +32,6 @@ import java.time.ZoneOffset;
 @Service
 public class ServiceDispatcher {
 
-
     private Config config;
 
     @Autowired
@@ -41,6 +40,9 @@ public class ServiceDispatcher {
     @Autowired
     ResponseDataRepository repository;
 
+    /** Business logic
+     * @param config - Contains parameters from scheduled or manual request
+     */
     public void handleRequest(Config config) {
         try {
             this.config = config;
@@ -55,6 +57,9 @@ public class ServiceDispatcher {
 
     }
 
+    /** Creates a simple text file
+     * @param data
+     */
     private void createFlatFile(ResponseData data) {
             FileWriter writer = null;
             File file = new File(getFullPath(data, "txt"));
@@ -73,6 +78,10 @@ public class ServiceDispatcher {
         }
     }
 
+    /** Checks for the specified directory or creates it
+     * @param directoryLocation
+     * @throws IOException
+     */
     private void createDirectory(String directoryLocation) throws IOException {
         File file = new File(directoryLocation);
         if (!file.exists() && !file.mkdir()) {
@@ -174,6 +183,11 @@ public class ServiceDispatcher {
 
     }
 
+    /** Utility Method for creating the filename
+     * @param data
+     * @param fileExtension
+     * @return
+     */
     private String getFullPath(ResponseData data, String fileExtension) {
         return new File(
                 config.getDirectoryLocation() + "station-" + config.getStationId() + "_timestamp-" + data.getTimeStamp().toInstant(ZoneOffset.UTC).toString().replace(":", "-")).getPath()+"."+fileExtension;
@@ -204,7 +218,7 @@ public class ServiceDispatcher {
     }
 
     /**
-     * Stores the acquired data into a SQL database
+     * Stores the acquired data into a SQL database via JPA
      *
      * @param data - The converted response
      */

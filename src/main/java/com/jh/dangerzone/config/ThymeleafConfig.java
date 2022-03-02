@@ -19,6 +19,10 @@ import javax.servlet.ServletContext;
 @Configuration
 public class ThymeleafConfig {
 
+    /*
+    These settings are for the live reload functionality to work
+     */
+
     private final ThymeleafProperties properties;
     @Value("${spring.thymeleaf.templates_root:}")
     private String templatesRoot;

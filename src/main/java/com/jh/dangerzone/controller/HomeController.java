@@ -30,7 +30,10 @@ public class HomeController {
     @Value("${frequency}")
     private Frequency frequency;
 
-
+    /** Handles the POST-request to /home
+     * @param model - state object for view
+     * @return
+     */
     @GetMapping
     public ModelAndView home(Model model) {
         Config config = new Config(stationId,directoryLocation,frequency);
@@ -39,6 +42,13 @@ public class HomeController {
         return new ModelAndView("apiPage");
     }
 
+    /** Handles the POST-request to /home
+     *
+     * @param config - contains the POST-data
+     * @param bindingResult - contains form errors from the view
+     * @param model - state object for view
+     * @return
+     */
     @PostMapping
     public ModelAndView postConfig(@ModelAttribute @Valid Config config, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {

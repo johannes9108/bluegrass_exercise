@@ -22,6 +22,11 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+
+/*
+This class sets up a scheduling service as specified
+by Spring
+ */
 @Configuration
 @EnableScheduling
 public class DynamicSchedulingConfig implements SchedulingConfigurer {
@@ -29,6 +34,9 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
     @Autowired
     private ServiceDispatcher serviceDispatcher;
 
+    /*
+    Returns the object which will perform a given task in a SingleThread
+     */
     @Bean
     public Executor taskExecutor() {
         return Executors.newSingleThreadScheduledExecutor();
@@ -43,6 +51,9 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
     @Value("${frequency}")
     private Frequency frequency;
 
+    /** Checks for the specified directory or creates it
+     * @throws IOException
+     */
     @PostConstruct
     public void init() throws IOException {
 
@@ -53,7 +64,12 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
 
     }
 
-
+    /** Method which register the task containing the "handleRequest" method
+     * This method will run the task according to the given frequency read from the
+     * config object which is created at start.
+     *
+     * @param taskRegistrar
+     */
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         Config config = new Config(stationId,directoryLocation,frequency);
