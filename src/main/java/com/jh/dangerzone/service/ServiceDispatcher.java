@@ -22,6 +22,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,16 +42,35 @@ public class ServiceDispatcher {
     ResponseDataRepository repository;
 
     public void handleRequest(Config config) {
-        this.config = config;
         try {
+            this.config = config;
             ResponseData data = openDataMetobsReader.callAPI(config.getStationId(), "latest-hour");
             createXMLDocumentFromData(data);
+            createFlatFile(data);
             storeInDB(data);
-        } catch (IOException e) {
-            throw new RuntimeException("Application encountered an error: " + e.getLocalizedMessage());
+        } catch (RuntimeException e) {
+            throw e;
         }
 
 
+    }
+
+    private void createFlatFile(ResponseData data) {
+            FileWriter writer = null;
+            File file = new File(getFullPath(data, "txt"));
+        try {
+            writer = new FileWriter(file);
+            writer.write(data.outputToFile());
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't create file: " + file.getAbsolutePath() + " - " + e.getMessage());
+        }
+        finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
     }
 
     private void createDirectory(String directoryLocation) throws IOException {
@@ -132,8 +152,7 @@ public class ServiceDispatcher {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "8");
             DOMSource source = new DOMSource(doc);
             if (validateXMLSchema(new File("src/main/resources/weather_data.xsd"), source)) {
-                StreamResult result = new StreamResult(new File(
-                        config.getDirectoryLocation() + "station-" + config.getStationId() + "_timestamp-" + data.getTimeStamp().toInstant(ZoneOffset.UTC).toString().replace(":", "-")).getPath());
+                StreamResult result = new StreamResult(getFullPath(data,"xml"));
                 transformer.transform(source, result);
 
                 // Output to console for testing
@@ -153,6 +172,11 @@ public class ServiceDispatcher {
             throw new RuntimeException(e.getMessage());
         }
 
+    }
+
+    private String getFullPath(ResponseData data, String fileExtension) {
+        return new File(
+                config.getDirectoryLocation() + "station-" + config.getStationId() + "_timestamp-" + data.getTimeStamp().toInstant(ZoneOffset.UTC).toString().replace(":", "-")).getPath()+"."+fileExtension;
     }
 
     /**

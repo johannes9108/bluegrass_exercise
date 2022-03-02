@@ -64,6 +64,10 @@ public class ResponseData {
                 '}';
     }
 
+    public String outputToFile() {
+        return String.format("%s,%s,%s,%s,%s", timeStamp, stationName, temperature, windDirection, windSpeed);
+    }
+
     public int getStationID() {
         return stationID;
     }

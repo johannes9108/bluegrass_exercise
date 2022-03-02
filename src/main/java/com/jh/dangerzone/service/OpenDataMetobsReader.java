@@ -26,7 +26,7 @@ public class OpenDataMetobsReader {
      * @param periodName - Type of time period for the requests
      * @return Relevant extracted data
      */
-    ResponseData callAPI(int stationKey, String periodName) throws IOException {
+    ResponseData callAPI(int stationKey, String periodName){
 
         JSONObject parameterObject = null;
         try {
@@ -41,7 +41,7 @@ public class OpenDataMetobsReader {
             long epochTime = Instant.now().truncatedTo(ChronoUnit.SECONDS).toEpochMilli();
             return new ResponseData(stationKey,stationName,epochTime,temp,windDirection,windSpeed);
         } catch (IOException e) {
-            throw new IOException("Problem with the URL: " + e.getMessage());
+            throw new RuntimeException("Problem with the URL: " + e.getMessage());
         }
         catch (JSONException e){
             throw new RuntimeException("Problem with JSON parsing: " + e.getMessage());
